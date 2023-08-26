@@ -12,8 +12,12 @@ void index(int &input, bool &left) {
 }
 
 int main() {
-  Stack zero, one, two, three, four, five;
-  Stack stacks[6] = {zero, one, two, three, four, five};
+  Stack stacks[6] = {
+    // Pilhas de jogo
+    Stack(), Stack(), Stack(), Stack(), 
+    // Pilhas de saída
+    Stack(), Stack()
+  };
 
   int from, to;
   bool insert_left = true;
@@ -24,21 +28,17 @@ int main() {
   index(from, remove_left);
   index(to, insert_left);
 
-  stacks[from].Add(Card(9, 3), false);
-  stacks[from].Add(Card(8, 2), false);
+  stacks[from].Push(Card(9, 3), remove_left);
   
-  stacks[from].Remove(remove_left);
-  stacks[to].Add(Card(11, 4), insert_left);
+  Card top;
+  stacks[from].Pop(top, remove_left);
+  stacks[to].Push(top, insert_left);
 
-  for (int i = 0; i < 26; i++) {
-    stacks[from].Items()[i].Print();
-  }
+  Card top2;
+  stacks[to].Pop(top2, insert_left);
 
-  std::cout << '\n';
+  std::cout << top2.GetName();
+  stacks[to].Top(top2, insert_left);
 
-  for (int i = 0; i < 26; i++) {
-    stacks[to].Items()[i].Print();
-  }
-  
   return 0;
 }

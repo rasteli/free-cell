@@ -10,7 +10,6 @@ class Card {
 
   public:
     Card(int n = -1, int s = -1);
-    void Print();
     int GetName();
     Suit GetSuit();
 };

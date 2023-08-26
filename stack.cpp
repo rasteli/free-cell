@@ -1,44 +1,72 @@
+#include <iostream>
 #include <string>
 
 #include "stack.h"
 #include "card.h"
 
-Card* Stack::Items() {
-  return items;
+Stack::Stack() {
+  top_left = -1;
+  top_right = -1;
 }
 
-void Stack::Add(Card item, bool left) {
+bool Stack::Empty(bool left) {
+  if (left) return top_left == -1;
+
+  return top_right == -1;
+}
+
+bool Stack::Full(bool left) {
+  if (left) return top_left == max_items - 1;
+
+  return top_right == max_items - 1;
+}
+
+void Stack::Push(Card item, bool left) {
+  if (Full(left)) {
+    std::cout << "Pilha cheia. Não é possível inserir.\n";
+    return;
+  }
+
   std::string suit_color = item.GetSuit().Color();
-  Card last_item;
+  
+  if (!Empty(left)) {
+    Card last_item;
+
+    Top(last_item, left);
+
+    if (suit_color == last_item.GetSuit().Color()) return;
+    if (item.GetName() + 1 != last_item.GetName()) return;
+  }
 
   if (left) {
-    if (num_left_items > 0) last_item = items[num_left_items - 1];
-
-    if (num_left_items > 0 && suit_color == last_item.GetSuit().Color()) return;
-    if (num_left_items > 0 && item.GetName() > last_item.GetName()) return;
-
-    items[num_left_items++] = item;
+    items[++top_left] = item;
   } else {
-    if (num_right_items > 0) last_item = items[25 - num_right_items + 1];
-
-    if (num_right_items > 0 && suit_color == last_item.GetSuit().Color()) return;
-    if (num_right_items > 0 && item.GetName() > last_item.GetName()) return;
-
-    items[25 - num_right_items++] = item;
+    items[25 - ++top_right] = item;
   }
 }
 
-void Stack::Remove(bool left) {
-  if (left && num_left_items > 0) {
-    items[--num_left_items] = Card(-1, -1);
+void Stack::Pop(Card &item, bool left) {
+  if (Empty(left)) {
+    std::cout << "Pilha vazia. Não há o que remover.\n";
+    return;
   }
   
-  if (!left && num_right_items > 0) {
-    items[25 - --num_right_items] = Card(-1, -1);
+  if (left) {
+    item = items[top_left--];
+  } else {
+    item = items[25 - top_right--];
   }
 }
 
-Stack::Stack() {
-  num_left_items = 0;
-  num_right_items = 0;
+void Stack::Top(Card &item, bool left) {
+  if (Empty(left)) {
+    std::cout << "Pilha vazia. Não há elemento no topo.\n";
+    return;
+  }
+  
+  if (left) {
+    item = items[top_left];
+  } else {
+    item = items[25 - top_right];
+  }
 }
