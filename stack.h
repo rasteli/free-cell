@@ -13,9 +13,13 @@ class Stack {
 
   public:
     Stack();
-    void Push(Card item, bool left);
+
+    bool Push(Card item, bool left);
+    void Push(bool left, Card item);
+
     void Pop(Card &item, bool left);
     void Top(Card &item, bool left);
+    
     bool Empty(bool left);
     bool Full(bool left);
 };

@@ -10,39 +10,51 @@ Stack::Stack() {
 }
 
 bool Stack::Empty(bool left) {
-  if (left) return top_left == -1;
-
-  return top_right == -1;
+  return (left ? top_left : top_right) == -1;
 }
 
 bool Stack::Full(bool left) {
-  if (left) return top_left == max_items - 1;
-
-  return top_right == max_items - 1;
+  return (left ? top_left : top_right) == max_items -1;
 }
 
-void Stack::Push(Card item, bool left) {
+bool Stack::Push(Card item, bool left) {
   if (Full(left)) {
     std::cout << "Pilha cheia. Não é possível inserir.\n";
-    return;
+    return false;
   }
 
-  std::string suit_color = item.GetSuit().Color();
-  
   if (!Empty(left)) {
-    Card last_item;
+    std::string suit_color = item.GetSuit().Color();
+    Card last_item = left ? items[top_left] : items[25 - top_right];
 
-    Top(last_item, left);
+    if (suit_color == last_item.GetSuit().Color()) {
+      std::cout << "\nNão é possível inserir " << item.GetName() 
+                << " de " << item.GetSuit().Type() << " em " 
+                << last_item.GetName() << " de " << last_item.GetSuit().Type() << "."
+                << " As cores dos naipes devem ser diferentes.\n";
 
-    if (suit_color == last_item.GetSuit().Color()) return;
-    if (item.GetName() + 1 != last_item.GetName()) return;
+      return false;
+    }
+
+    if (item.GetName() + 1 != last_item.GetName()) {
+      std::cout << "\nNão é possível inserir " << item.GetName() 
+                << " de " << item.GetSuit().Type() << " em " 
+                << last_item.GetName() << " de " << last_item.GetSuit().Type() << "."
+                << " O valor da carta inserida deve ser menor em 1.\n";
+
+      return false;
+    }
   }
 
-  if (left) {
-    items[++top_left] = item;
-  } else {
-    items[25 - ++top_right] = item;
-  }
+  int index = left ? ++top_left : (25 - ++top_right);
+  items[index] = item;
+
+  return true;
+}
+
+void Stack::Push(bool left, Card item) {
+  int index = left ? ++top_left : (25 - ++top_right);
+  items[index] = item;
 }
 
 void Stack::Pop(Card &item, bool left) {
@@ -50,12 +62,8 @@ void Stack::Pop(Card &item, bool left) {
     std::cout << "Pilha vazia. Não há o que remover.\n";
     return;
   }
-  
-  if (left) {
-    item = items[top_left--];
-  } else {
-    item = items[25 - top_right--];
-  }
+
+  item = left ? items[top_left--] : items[25 - top_right--];
 }
 
 void Stack::Top(Card &item, bool left) {
@@ -64,9 +72,5 @@ void Stack::Top(Card &item, bool left) {
     return;
   }
   
-  if (left) {
-    item = items[top_left];
-  } else {
-    item = items[25 - top_right];
-  }
+  item = left ? items[top_left] : items[25 - top_right];
 }

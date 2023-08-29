@@ -1,15 +1,8 @@
 #include <iostream>
+
 #include "stack.h"
 #include "card.h"
-
-void index(int &input, bool &left) {
-  if (input % 2 == 0) {
-    input /= 2;
-  } else {
-    input = (input - 1) / 2;
-    left = false;
-  }
-}
+#include "utils.h"
 
 int main() {
   Stack stacks[6] = {
@@ -19,26 +12,39 @@ int main() {
     Stack(), Stack()
   };
 
-  int from, to;
-  bool insert_left = true;
-  bool remove_left = true;
+  // n == 4, pois somente as pilhas de jogo são populadas.
+  utils::populate_stacks(stacks, 4);
 
-  std::cin >> from >> to;
+  while (true) {
+    // Limpa o console
+    std::cout << "\033[2J\033[1;1H";
 
-  index(from, remove_left);
-  index(to, insert_left);
+    utils::print_help();
+    utils::print_stacks(stacks, 4);
 
-  stacks[from].Push(Card(9, 3), remove_left);
-  
-  Card top;
-  stacks[from].Pop(top, remove_left);
-  stacks[to].Push(top, insert_left);
+    int from, to;
+    bool insert_left, remove_left;
 
-  Card top2;
-  stacks[to].Pop(top2, insert_left);
+    std::cout << "Faça a jogada: ";
+    std::cin >> from >> to;
+    std::cin.ignore();
 
-  std::cout << top2.GetName();
-  stacks[to].Top(top2, insert_left);
+    utils::index(from, remove_left);
+    utils::index(to, insert_left);
+
+    Card top;
+
+    stacks[from].Pop(top, remove_left);
+    bool push_success = stacks[to].Push(top, insert_left);
+
+    if (!push_success) {
+      // Se não foi possível inserir a carta, ela é retornada à pilha de origem.
+      stacks[from].Push(remove_left, top);
+      
+      std::cout << "Pressione ENTER para continuar...";
+      std::cin.get();
+    }
+  }
 
   return 0;
 }

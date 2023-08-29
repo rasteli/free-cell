@@ -1,0 +1,84 @@
+#include <iostream>
+
+#include "utils.h"
+#include "stack.h"
+
+void utils::index(int &input, bool &left) {
+  // pré-condição: 0 <= input <= 7
+  // pós-condição: 0 <= input <= 3 && left == true || false
+  if (input % 2 == 0) {
+    input /= 2;
+    left = true;
+  } else {
+    input = (input - 1) / 2;
+    left = false;
+  }
+}
+
+void utils::populate_stacks(Stack *stacks, int n) {
+  // pré-condição: stacks é um array de pilhas de tamanho n
+  // pós-condição: as pilhas de jogo estão aleatoriamente populadas com as 52 cartas
+  srand(time(0));
+
+  int i = 0;
+  Card deck[52];
+
+  for (int j = 1; j <= 13; j++) {
+    for (int k = 1; k <= 4; k++) {
+      deck[i++] = Card(j, k);
+    }
+  }
+
+  for (int c = 0; c < i; c++) {
+    int index;
+    bool left;
+
+    do {
+      index = rand() % n;
+      left = rand() % 2;
+    } while(stacks[index].Full(left));
+    
+    stacks[index].Push(left, deck[c]);
+  }
+}
+
+void utils::print_stacks(Stack *stacks, int n) {
+  std::string names[13] = {
+    "As", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+    "Valete", "Dama", "Rei"
+  };
+
+  std::string suits[4] = {
+    "Espadas", "Paus", "Ouro", "Copas"
+  };
+
+  std::cout << "Topos\n---------------------------------\n";
+
+  for (int i = 0; i < n; i++) {
+    Card top;
+    std::string name, suit;
+    
+    for (int left = 1; left >= 0; left--) {
+      stacks[i].Top(top, left);
+      name = names[top.GetName() - 1];
+      
+      // Se o nome for uma palavra (Ás, Valete, Dama ou Rei),
+      // name será somente o primeiro caractere dela.
+      if (top.GetName() == 1 || top.GetName() > 10) {
+        name = name.at(0);
+      }
+      
+      suit = suits[top.GetSuit().Type() - 1].at(0);
+
+      std::cout << '[' << name << '|' << suit << "] ";
+    }
+  }
+
+  std::cout << "\n  0     1     2     3     4     5     6     7\n\n";
+}
+
+void utils::print_help() {
+  std::cout << "--------------------------------- FREE CELL ---------------------------------\n"
+            << "Pretos: Espadas e Paus\n"
+            << "Vermelhos: Ouro e Copas\n\n";
+}
