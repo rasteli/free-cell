@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 #include "utils.h"
 #include "stack.h"
