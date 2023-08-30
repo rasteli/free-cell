@@ -3,6 +3,7 @@
 
 #include "stack.h"
 #include "card.h"
+#include "utils.h"
 
 Stack::Stack() {
   top_left = -1;
@@ -28,18 +29,16 @@ bool Stack::Push(Card item, bool left) {
     Card last_item = left ? items[top_left] : items[25 - top_right];
 
     if (suit_color == last_item.GetSuit().Color()) {
-      std::cout << "\nNão é possível inserir " << item.GetName() 
-                << " de " << item.GetSuit().Type() << " em " 
-                << last_item.GetName() << " de " << last_item.GetSuit().Type() << "."
+      std::cout << "\nNão é possível inserir " << utils::pretty_card(item) << " em " 
+                << utils::pretty_card(last_item) << "."
                 << " As cores dos naipes devem ser diferentes.\n";
 
       return false;
     }
 
     if (item.GetName() + 1 != last_item.GetName()) {
-      std::cout << "\nNão é possível inserir " << item.GetName() 
-                << " de " << item.GetSuit().Type() << " em " 
-                << last_item.GetName() << " de " << last_item.GetSuit().Type() << "."
+      std::cout << "\nNão é possível inserir " << utils::pretty_card(item) << " em " 
+                << utils::pretty_card(last_item) << "."
                 << " O valor da carta inserida deve ser menor em 1.\n";
 
       return false;
