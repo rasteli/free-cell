@@ -8,6 +8,7 @@
 void utils::index(int &input, bool &left) {
   // pré-condição: 0 <= input <= 7
   // pós-condição: 0 <= input <= 3 e left == true || false
+
   if (input % 2 == 0) {
     input /= 2;
     left = true;
@@ -18,8 +19,9 @@ void utils::index(int &input, bool &left) {
 }
 
 void utils::populate_tableaus(Stack *tableaus, int n) {
-  // pré-condição: tableaus é um array de pilhas de jogo de tamanho n
+  // pré-condição: tableaus é um vetor de pilhas de jogo de tamanho n
   // pós-condição: as pilhas de jogo estão aleatoriamente populadas com as 52 cartas
+
   srand(time(0));
 
   int i = 0;
@@ -155,6 +157,9 @@ std::string utils::pretty_card(Card card) {
 }
 
 bool utils::insert_free_cell(Card *free_cells, Card card, int index) {
+  // pré-condição: free_cells é um vetor de Cards inicializadas e a free cell na posição index não está ocupada.
+  // pós-condição: card é inserida em free_cells na posição index.
+  
   if (free_cells[index].GetValue() != -1) {
     std::cout << "\nImpossível inserir: free cell ocupada.\n";
     return false;
@@ -165,6 +170,9 @@ bool utils::insert_free_cell(Card *free_cells, Card card, int index) {
 }
 
 bool utils::remove_free_cell(Card *free_cells, Card &card, int index) {
+  // pré-condição: free_cells é um vetor de Cards inicializadas e a free cell na posição index não está vazia.
+  // pós-condição: card é removida de free_cells na posição index.
+  
   if (free_cells[index].GetValue() == -1) {
     std::cout << "\nImpossível remover: free cell vazia.\n";
     return false;
@@ -176,6 +184,11 @@ bool utils::remove_free_cell(Card *free_cells, Card &card, int index) {
 }
 
 bool utils::insert_foundation(Card *foundations, Card card, int &foundations_completed) {
+  // pré-condição: foundations é um vetor de Cards inicializadas e a carta na posição
+  // a que card será inserida não é um Rei, tem mesmo naipe e valor menor em 1 que card.
+  // pós-condição: card é inserida em foundations e foundations_completed é incrementado
+  // em 1 se card for um Rei.
+  
   int suit = card.GetSuit().Type();
   int index = suit - 1;
 
@@ -186,7 +199,7 @@ bool utils::insert_foundation(Card *foundations, Card card, int &foundations_com
     return false;
   }
 
-  // A carta cujo valor é -1 é inválida; quer dizer, a posição está marcada para inserção
+  // O valor -1 de uma carta é sentinela; quer dizer, a posição está marcada para inserção
   // como se estivesse vazia.
   if (last_card.GetValue() == -1 && card.GetValue() != 1) {
     std::cout << "\nSomente um Ás pode ser inserido em uma pilha de saída vazia.\n";

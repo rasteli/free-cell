@@ -19,6 +19,10 @@ bool Stack::Full(bool left) {
 }
 
 bool Stack::Push(Card item, bool left) {
+  // pré-condição: pilha já inicializada, não cheia e a carta no topo da pilha 
+  // tem cor diferente de item e valor maior em 1.
+  // pós-condição: item é inserido na pilha.
+  
   if (Full(left)) {
     std::cout << "Pilha cheia. Não é possível inserir.\n";
     return false;
@@ -52,11 +56,17 @@ bool Stack::Push(Card item, bool left) {
 }
 
 void Stack::Push(bool left, Card item) {
+  // pré-condição: pilha já inicializada.
+  // pós-condição: item é inserido na pilha.
+  
   int index = left ? ++top_left : (25 - ++top_right);
   items[index] = item;
 }
 
 bool Stack::Pop(Card &item, bool left) {
+  // pré-condição: pilha já inicializada e não vazia.
+  // pós-condição: item é removido da pilha.
+  
   if (Empty(left)) {
     std::cout << "Pilha vazia. Não há o que remover.\n";
     return false;
@@ -67,6 +77,9 @@ bool Stack::Pop(Card &item, bool left) {
 }
 
 void Stack::Top(Card &item, bool left) {
+  // pré-condição: pilha já inicializada e não vazia.
+  // pós-condição: item recebe o valor do topo da pilha e a pilha não é alterada.
+  
   if (Empty(left)) {
     std::cout << "Pilha vazia. Não há elemento no topo.\n";
     return;
