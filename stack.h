@@ -14,8 +14,9 @@ class Stack {
   public:
     Stack();
 
-    bool Push(Card item, bool left);
-    void Push(bool left, Card item);
+    bool Push(Card item, bool left); // Inserção pelo usuário
+    void Push(bool left, Card item); // Inserção aleatória (início de jogo)
+    bool Push(Card item); // Inserção em pilha de saída
 
     void Pop(Card &item, bool left);
     void Top(Card &item, bool left);

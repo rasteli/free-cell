@@ -28,7 +28,7 @@ int main() {
     std::cout << "\033[2J\033[1;1H";
 
     utils::print_help();
-    utils::print_stacks(stacks, 4);
+    utils::print_stacks(stacks, 6);
     utils::print_free_cells(free_cells, 4);
 
     std::cout << "Faça a jogada: ";
@@ -49,11 +49,19 @@ int main() {
     }
 
     if (to > 7 && to < 12) {
+      // Inserindo em free cell
       // Mesma ideia que <FC>
       success = utils::insert_free_cell(free_cells, top, to - 8);
     } else if (to >= 0 && to <= 7) {
+      // Inserindo em pilha de jogo
       utils::index(to, insert_left);
       success = stacks[to].Push(top, insert_left);
+    } else if (to == 12) {
+      // Inserindo em pilha de saída
+      int suit = top.GetSuit().Type();
+      to = (suit == 1 || suit == 2) ? 4 : 5;
+
+      success = stacks[to].Push(top);
     }
 
     if (!success) {

@@ -46,7 +46,7 @@ void utils::populate_stacks(Stack *stacks, int n) {
 void utils::print_stacks(Stack *stacks, int n) {
   std::cout << "Topos\n---------------------------------\n";
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < n - 2; i++) {
     Card top;
     
     for (int left = 1; left >= 0; left--) {
@@ -56,6 +56,23 @@ void utils::print_stacks(Stack *stacks, int n) {
   }
 
   std::cout << "\n  0     1     2     3     4     5     6     7\n\n";
+
+  std::cout << "Saída\n---------------------------------\n";
+
+  for (int i = 4; i < n; i++) {
+    Card top;
+    
+    for (int left = 1; left >= 0; left--) {
+      if (stacks[i].Empty(left)) {
+        std::cout << "[   ] ";
+      } else {
+        stacks[i].Top(top, left);
+        std::cout << pretty_card(top) << ' ';
+      }
+    }
+  }
+
+  std::cout << "\n  12    12    12    12\n\n";
 }
 
 void utils::print_help() {
