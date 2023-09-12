@@ -50,13 +50,13 @@ void utils::print_help() {
   std::cout << "--------------------------------- FREE CELL ---------------------------------\n";
 
   std::cout << "A movimentação das cartas segue as seguintes regras:\n"
-            << "  - Para uma pilha de saída: a pilha de saída recebe cartas em ordem imediatamente crescente,\n"
-            << "do Ás ao Rei, todas do mesmo naipe.\n"
-            << "  - Para uma pilha de jogo: a pilha de jogo recebe cartas com naipes de cores alternantes em\n"
-            << "ordem imediatamente decrescente.\n"
-            << "  - Para uma free cell: a free cell recebe qualquer carta desde que não esteja já ocupada.\n"
+            << "  - Uma pilha de saída recebe cartas em ordem imediatamente crescente,\n"
+            << "    do Ás ao Rei, todas do mesmo naipe.\n"
+            << "  - Uma pilha de jogo recebe cartas com naipes de cores alternantes em\n"
+            << "    ordem imediatamente decrescente.\n"
+            << "  - Uma free cell recebe qualquer carta desde que não esteja já ocupada.\n"
             << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele. O topo da pilha é a\n"
-            << "carta mais à esquerda, próxima ao índice.\n\n";
+            << "    carta mais à esquerda, próxima ao índice.\n\n";
 
   std::cout << "Para jogar, insira o índice de onde quer tirar uma carta seguido de um espaço e o índice de onde quer colocá-la.\n"
             << "Por exemplo, se quiser mover a carta do topo da pilha 4 para a free cell 10, insira: 4 10.\n\n"
@@ -97,12 +97,10 @@ void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, in
   std::cout << "Free Cells\n---------------------------------\n";
 
   for (int i = 0; i < n; i++) {
-    Card card = free_cells[i];
-
-    if (card.GetValue() == -1) {
+    if (free_cells[i].GetValue() == -1) {
       std::cout << "[   ] ";
     } else {
-      std::cout << pretty_card(card) << ' ';
+      std::cout << pretty_card(free_cells[i]) << ' ';
     }
   }
 
