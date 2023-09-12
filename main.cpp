@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 #include "stack.h"
 #include "card.h"
@@ -6,30 +7,31 @@
 
 int main() {
   Card top;
-  int from, to;
-  bool insert_left, remove_left, from_stack, success;
+  int from, to, foundations_completed = 0;
+  bool insert_left, remove_left, from_stack, push_success, pop_success;
   
-  Stack stacks[6] = {
-    // Pilhas de jogo
+  // Pilhas de jogo
+  Stack tableaus[4] = {
     Stack(), Stack(), Stack(), Stack(), 
-    // Pilhas de saída
-    Stack(), Stack()
+  };
+
+  // "Pilhas" de saída
+  Card foundations[4] = {
+    Card(), Card(), Card(), Card()
   };
 
   Card free_cells[4] = {
     Card(), Card(), Card(), Card()
   };
 
-  // n == 4, pois somente as pilhas de jogo são populadas.
-  utils::populate_stacks(stacks, 4);
+  utils::populate_tableaus(tableaus, 4);
 
-  while (true) {
+  while (foundations_completed < 4) {
     // Limpa o console
     std::cout << "\033[2J\033[1;1H";
 
     utils::print_help();
-    utils::print_stacks(stacks, 6);
-    utils::print_free_cells(free_cells, 4);
+    utils::print_cells(tableaus, foundations, free_cells, 4);
 
     std::cout << "Faça a jogada: ";
     std::cin >> from >> to;
@@ -40,34 +42,31 @@ int main() {
       // <FC> Subtrai-se 8 do índice (from), pois o vetor free_cells tem 4 elementos
       // (índices de 0 a 3) e as free cells são informadas pelo usuário como um
       // inteiro no intervalo [8, 11].
-      utils::remove_free_cell(free_cells, top, from - 8);
+      pop_success = utils::remove_free_cell(free_cells, top, from - 8);
     } else if (from >= 0 && from <= 7) {
       from_stack = true;
       
       utils::index(from, remove_left);
-      stacks[from].Pop(top, remove_left);
+      pop_success = tableaus[from].Pop(top, remove_left);
     }
 
     if (to > 7 && to < 12) {
       // Inserindo em free cell
       // Mesma ideia que <FC>
-      success = utils::insert_free_cell(free_cells, top, to - 8);
+      push_success = utils::insert_free_cell(free_cells, top, to - 8);
     } else if (to >= 0 && to <= 7) {
       // Inserindo em pilha de jogo
       utils::index(to, insert_left);
-      success = stacks[to].Push(top, insert_left);
+      push_success = tableaus[to].Push(top, insert_left);
     } else if (to == 12) {
       // Inserindo em pilha de saída
-      int suit = top.GetSuit().Type();
-      to = (suit == 1 || suit == 2) ? 4 : 5;
-
-      success = stacks[to].Push(top);
+      push_success = utils::insert_foundation(foundations, top, foundations_completed);
     }
 
-    if (!success) {
-      // Se não foi possível inserir a carta, ela é retornada ao lugar de origem.
+    if (pop_success && !push_success) {
+      // Se não foi possível inserir a carta, mas foi removida, ela é retornada ao lugar de origem.
       if (from_stack) {
-        stacks[from].Push(remove_left, top);
+        tableaus[from].Push(remove_left, top);
       } else {
         // Mesma ideia que <FC>
         utils::insert_free_cell(free_cells, top, from - 8);
@@ -77,6 +76,9 @@ int main() {
       std::cin.get();
     }
   }
+
+  std::cout << "---------------------------------------------------------------------\n"
+            << "Você ganhou o jogo! Parabéns!";
 
   return 0;
 }

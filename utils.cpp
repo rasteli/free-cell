@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <ctime>
 
 #include "utils.h"
@@ -16,8 +17,8 @@ void utils::index(int &input, bool &left) {
   }
 }
 
-void utils::populate_stacks(Stack *stacks, int n) {
-  // pré-condição: stacks é um array de pilhas de tamanho n
+void utils::populate_tableaus(Stack *tableaus, int n) {
+  // pré-condição: tableaus é um array de pilhas de jogo de tamanho n
   // pós-condição: as pilhas de jogo estão aleatoriamente populadas com as 52 cartas
   srand(time(0));
 
@@ -37,48 +38,95 @@ void utils::populate_stacks(Stack *stacks, int n) {
     do {
       index = rand() % n;
       left = rand() % 2;
-    } while(stacks[index].Full(left));
+    } while(tableaus[index].Full(left));
     
-    stacks[index].Push(left, deck[c]);
+    tableaus[index].Push(left, deck[c]);
   }
-}
-
-void utils::print_stacks(Stack *stacks, int n) {
-  std::cout << "Topos\n---------------------------------\n";
-
-  for (int i = 0; i < n - 2; i++) {
-    Card top;
-    
-    for (int left = 1; left >= 0; left--) {
-      stacks[i].Top(top, left);
-      std::cout << pretty_card(top) << ' ';
-    }
-  }
-
-  std::cout << "\n  0     1     2     3     4     5     6     7\n\n";
-
-  std::cout << "Saída\n---------------------------------\n";
-
-  for (int i = 4; i < n; i++) {
-    Card top;
-    
-    for (int left = 1; left >= 0; left--) {
-      if (stacks[i].Empty(left)) {
-        std::cout << "[   ] ";
-      } else {
-        stacks[i].Top(top, left);
-        std::cout << pretty_card(top) << ' ';
-      }
-    }
-  }
-
-  std::cout << "\n  12    12    12    12\n\n";
 }
 
 void utils::print_help() {
-  std::cout << "--------------------------------- FREE CELL ---------------------------------\n"
-            << "Pretos: Espadas e Paus\n"
-            << "Vermelhos: Ouro e Copas\n\n";
+  std::cout << "--------------------------------- FREE CELL ---------------------------------\n";
+
+  std::cout << "A movimentação das cartas segue as seguintes regras:\n"
+            << "  - Para uma pilha de saída: a pilha de saída recebe cartas em ordem imediatamente crescente,\n"
+            << "do Ás ao Rei, todas do mesmo naipe.\n"
+            << "  - Para uma pilha de jogo: a pilha de jogo recebe cartas com naipes de cores alternantes em\n"
+            << "ordem imediatamente decrescente.\n"
+            << "  - Para uma free cell: a free cell recebe qualquer carta desde que não esteja já ocupada.\n"
+            << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele. O topo da pilha é a\n"
+            << "carta mais à esquerda, próxima ao índice.\n\n";
+
+  std::cout << "Para jogar, insira o índice de onde quer tirar uma carta seguido de um espaço e o índice de onde quer colocá-la.\n"
+            << "Por exemplo, se quiser mover a carta do topo da pilha 4 para a free cell 10, insira: 4 10.\n\n"
+            << "O jogo é ganho quando todas as pilhas de saída forem preenchidas. Note que o estado inicial do jogo\n"
+            << "é aleatório, portanto talvez não haja uma solução.\n\n";
+
+  std::cout << "Naipes pretos: Espadas e Paus\n"
+            << "Naipes vermelhos: Ouro e Copas\n\n";
+}
+
+void utils::print_tableau(Stack tableau, int &index) {
+  Card top;
+  
+  for (int left = 1; left >= 0; left--) {
+    std::cout << index << ' ';
+
+    while (!tableau.Empty(left)) {
+      tableau.Pop(top, left);
+      std::cout << pretty_card(top) << ' ';
+    }
+
+    std::cout << '\n';
+    index++;
+  }
+}
+
+void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, int n) {
+  int index = 0;
+  
+  std::cout << "Pilhas de Jogo\n---------------------------------\n";
+
+  for (int i = 0; i < n; i++) {
+    print_tableau(tableaus[i], index);
+  }
+
+  std::cout << '\n';
+
+  std::cout << "Free Cells\n---------------------------------\n";
+
+  for (int i = 0; i < n; i++) {
+    Card card = free_cells[i];
+
+    if (card.GetValue() == -1) {
+      std::cout << "[   ] ";
+    } else {
+      std::cout << pretty_card(card) << ' ';
+    }
+  }
+
+  std::cout << '\n' 
+            << std::setw(3) << 8 
+            << std::setw(6) << 9 
+            << std::setw(7) << 10 
+            << std::setw(6) << 11 
+            << "\n\n";
+
+  std::cout << "Pilhas de Saída\n---------------------------------\n";
+
+  for (int i = 0; i < n; i++) {
+    if (foundations[i].GetValue() == -1) {
+      std::cout << "[   ] ";
+    } else {
+      std::cout << pretty_card(foundations[i]) << ' ';
+    }
+  }
+
+  std::cout << '\n'
+            << std::setw(4) << 12
+            << std::setw(6) << 12
+            << std::setw(6) << 12
+            << std::setw(6) << 12
+            << "\n\n";
 }
 
 std::string utils::pretty_card(Card card) {
@@ -93,11 +141,11 @@ std::string utils::pretty_card(Card card) {
     "Espadas", "Paus", "Ouro", "Copas"
   };
 
-  name = names[card.GetName() - 1];
+  name = names[card.GetValue() - 1];
       
   // Se o nome for uma palavra (Ás, Valete, Dama ou Rei),
   // name será somente o primeiro caractere dela.
-  if (card.GetName() == 1 || card.GetName() > 10) {
+  if (card.GetValue() == 1 || card.GetValue() > 10) {
     name = name.at(0);
   }
 
@@ -106,24 +154,8 @@ std::string utils::pretty_card(Card card) {
   return '[' + name + '|' + suit + "]";
 }
 
-void utils::print_free_cells(Card *free_cells, int n) {
-  std::cout << "Free Cells\n---------------------------------\n";
-
-  for (int i = 0; i < n; i++) {
-    Card card = free_cells[i];
-
-    if (card.GetName() == -1) {
-      std::cout << "[   ] ";
-    } else {
-      std::cout << pretty_card(card) << ' ';
-    }
-  }
-
-  std::cout << "\n  8     9     10     11\n\n";
-}
-
 bool utils::insert_free_cell(Card *free_cells, Card card, int index) {
-  if (free_cells[index].GetName() != -1) {
+  if (free_cells[index].GetValue() != -1) {
     std::cout << "\nImpossível inserir: free cell ocupada.\n";
     return false;
   }
@@ -132,12 +164,53 @@ bool utils::insert_free_cell(Card *free_cells, Card card, int index) {
   return true;
 }
 
-void utils::remove_free_cell(Card *free_cells, Card &card, int index) {
-  if (free_cells[index].GetName() == -1) {
+bool utils::remove_free_cell(Card *free_cells, Card &card, int index) {
+  if (free_cells[index].GetValue() == -1) {
     std::cout << "\nImpossível remover: free cell vazia.\n";
-    return;
+    return false;
   }
 
   card = free_cells[index];
   free_cells[index] = Card();
+  return true;
+}
+
+bool utils::insert_foundation(Card *foundations, Card card, int &foundations_completed) {
+  int suit = card.GetSuit().Type();
+  int index = suit - 1;
+
+  Card last_card = foundations[index];
+  
+  if (last_card.GetValue() == 13) {
+    std::cout << "Pilha de saída cheia. Não é possível inserir.\n";
+    return false;
+  }
+
+  // A carta cujo valor é -1 é inválida; quer dizer, a posição está marcada para inserção
+  // como se estivesse vazia.
+  if (last_card.GetValue() == -1 && card.GetValue() != 1) {
+    std::cout << "\nSomente um Ás pode ser inserido em uma pilha de saída vazia.\n";
+    return false;
+  } else if (last_card.GetValue() != -1) {
+    if (suit != last_card.GetSuit().Type()) {
+      std::cout << "\nNão é possível inserir " << pretty_card(card) << " em " 
+                << pretty_card(last_card) << "."
+                << " Os naipes devem ser iguais.\n";
+
+      return false;
+    }
+
+    if (card.GetValue() != last_card.GetValue() + 1) {
+      std::cout << "\nNão é possível inserir " << pretty_card(card) << " em " 
+                << pretty_card(last_card) << "."
+                << " O valor da carta inserida deve ser maior em 1.\n";
+
+      return false;
+    }
+  }
+
+  foundations[index] = card;
+  if (card.GetValue() == 13) foundations_completed++;
+
+  return true;
 }

@@ -6,11 +6,11 @@
 class Card {
   private:
     Suit suit;
-    int name;
+    int value;
 
   public:
-    Card(int n = -1, int s = -1);
-    int GetName();
+    Card(int v = -1, int s = -1);
+    int GetValue();
     Suit GetSuit();
 };
 
