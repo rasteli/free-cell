@@ -134,7 +134,7 @@ std::string utils::pretty_card(Card card) {
 
   std::string names[13] = {
     "As", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-    "Valete", "Dama", "Rei"
+    "Joker", "Queen", "King"
   };
 
   std::string suits[4] = {
