@@ -68,7 +68,7 @@ bool Stack::Pop(Card &item, bool left) {
   // pós-condição: item é removido da pilha.
   
   if (Empty(left)) {
-    std::cout << "Pilha vazia. Não há o que remover.\n";
+    std::cout << "\nPilha vazia. Não há o que remover.\n";
     return false;
   }
 
@@ -81,9 +81,13 @@ void Stack::Top(Card &item, bool left) {
   // pós-condição: item recebe o valor do topo da pilha e a pilha não é alterada.
   
   if (Empty(left)) {
-    std::cout << "Pilha vazia. Não há elemento no topo.\n";
+    std::cout << "\nPilha vazia. Não há elemento no topo.\n";
     return;
   }
   
   item = left ? items[top_left] : items[25 - top_right];
+}
+
+int Stack::Size(bool left) {
+  return (left ? top_left : top_right) + 1;
 }

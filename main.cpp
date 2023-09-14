@@ -26,7 +26,7 @@ int main() {
   utils::populate_tableaus(tableaus, 4);
 
   while (foundations_completed < 4) {
-    // Limpa o console
+    // Limpa o console (quer dizer, às vezes, não)
     std::cout << "\033[2J\033[1;1H";
 
     utils::print_help();
@@ -49,6 +49,12 @@ int main() {
       pop_success = tableaus[from].Pop(top, remove_left);
     }
 
+    if (!pop_success) {
+      std::cout << "Pressione ENTER para continuar...";
+      std::cin.get();
+      continue;
+    }
+
     if (to > 7 && to < 12) {
       // Inserindo em free cell
       // Mesma ideia que <FC>
@@ -62,7 +68,7 @@ int main() {
       push_success = utils::insert_foundation(foundations, top, foundations_completed);
     }
 
-    if (pop_success && !push_success) {
+    if (!push_success) {
       // Se não foi possível inserir a carta, mas foi removida, ela é retornada ao lugar de origem.
       if (from_stack) {
         tableaus[from].Push(remove_left, top);

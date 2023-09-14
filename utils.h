@@ -7,7 +7,6 @@ namespace utils {
   void index(int &input, bool &left);
   void populate_tableaus(Stack *tableaus, int n);
   void print_cells(Stack *tableaus, Card *foundations, Card *free_cells, int n);
-  void print_tableau(Stack tableau, int &index);
   void print_help();
   std::string pretty_card(Card card);
   bool remove_free_cell(Card *free_cells, Card &card, int index);

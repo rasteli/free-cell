@@ -22,6 +22,8 @@ class Stack {
     
     bool Empty(bool left);
     bool Full(bool left);
+
+    int Size(bool left);
 };
 
 #endif

@@ -34,15 +34,20 @@ void utils::populate_tableaus(Stack *tableaus, int n) {
   }
 
   for (int c = 0; c < i; c++) {
-    int index;
     bool left;
+    int t_index, d_index;
 
     do {
-      index = rand() % n;
+      t_index = rand() % n;
       left = rand() % 2;
-    } while(tableaus[index].Full(left));
+    } while(tableaus[t_index].Full(left));
+
+    do {
+      d_index = rand() % 52;
+    } while(deck[d_index].GetValue() == -1);
     
-    tableaus[index].Push(left, deck[c]);
+    tableaus[t_index].Push(left, deck[d_index]);
+    deck[d_index] = Card();
   }
 }
 
@@ -55,8 +60,7 @@ void utils::print_help() {
             << "  - Uma pilha de jogo recebe cartas com naipes de cores alternantes em\n"
             << "    ordem imediatamente decrescente.\n"
             << "  - Uma free cell recebe qualquer carta desde que não esteja já ocupada.\n"
-            << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele. O topo da pilha é a\n"
-            << "    carta mais à esquerda, próxima ao índice.\n\n";
+            << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele.\n\n";
 
   std::cout << "Para jogar, insira o índice de onde quer tirar uma carta seguido de um espaço e o índice de onde quer colocá-la.\n"
             << "Por exemplo, se quiser mover a carta do topo da pilha 4 para a free cell 10, insira: 4 10.\n\n"
@@ -67,33 +71,42 @@ void utils::print_help() {
             << "Naipes vermelhos: Ouro e Copas\n\n";
 }
 
-void utils::print_tableau(Stack tableau, int &index) {
-  Card top;
-  
-  for (int left = 1; left >= 0; left--) {
-    std::cout << index << ' ';
-
-    while (!tableau.Empty(left)) {
-      tableau.Pop(top, left);
-      std::cout << pretty_card(top) << ' ';
-    }
-
-    std::cout << '\n';
-    index++;
-  }
-}
-
 void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, int n) {
-  int index = 0;
+  Stack aux[n];
+  int max = tableaus[0].Size(true);
   
   std::cout << "Pilhas de Jogo\n---------------------------------\n";
 
   for (int i = 0; i < n; i++) {
-    print_tableau(tableaus[i], index);
+    aux[i] = tableaus[i];
+
+    for (int left = 1; left >= 0; left--)
+      if (aux[i].Size(left) > max) max = aux[i].Size(left);
   }
 
-  std::cout << '\n';
+  for (int i = 0; i < max; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int left = 1; left >= 0; left--) {
+        std::cout << std::left << std::setw(10);
 
+        if (aux[j].Empty(left)) {
+          std::cout << "[   ]";
+          continue;
+        }
+          
+        Card top;
+        aux[j].Pop(top, left);
+        std::cout << pretty_card(top);
+      }
+    }
+
+    std::cout << '\n';
+  }
+
+  for (int i = 0; i <= 7; i++)
+    std::cout << "  " << std::setw(8) << i;
+  
+  std::cout << "\n\n";
   std::cout << "Free Cells\n---------------------------------\n";
 
   for (int i = 0; i < n; i++) {
@@ -104,7 +117,8 @@ void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, in
     }
   }
 
-  std::cout << '\n' 
+  std::cout << '\n'
+            << std::right
             << std::setw(3) << 8 
             << std::setw(6) << 9 
             << std::setw(7) << 10 
@@ -193,7 +207,7 @@ bool utils::insert_foundation(Card *foundations, Card card, int &foundations_com
   Card last_card = foundations[index];
   
   if (last_card.GetValue() == 13) {
-    std::cout << "Pilha de saída cheia. Não é possível inserir.\n";
+    std::cout << "\nPilha de saída cheia. Não é possível inserir.\n";
     return false;
   }
 
