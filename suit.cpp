@@ -1,3 +1,4 @@
+#include <string>
 #include "suit.h"
 
 Suit::Suit(int t, std::string c) {

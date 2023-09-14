@@ -1,3 +1,4 @@
+#include <string>
 #include "stack.h"
 
 #ifndef UTILS_H

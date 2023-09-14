@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <iomanip>
 #include <ctime>
 
@@ -147,7 +148,7 @@ std::string utils::pretty_card(Card card) {
   std::string name, suit;
 
   std::string names[13] = {
-    "As", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+    "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10",
     "Joker", "Queen", "King"
   };
 
