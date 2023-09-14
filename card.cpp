@@ -8,14 +8,12 @@ Card::Card(int v, int s) {
   // s = [1 (Espadas), 2 (Paus), 3 (Ouro), 4 (Copas)]
   if (v < 1 || v > 13 || s < 1 || s > 4) {
     value = -1;
-    suit = Suit(-1, "");
+    suit = Suit();
     return;
   };
   
-  std::string color = (s == 1 || s == 2) ? "Preto" : "Vermelho";
-  
   value = v;
-  suit = Suit(s, color);
+  suit = Suit(s);
 }
 
 Suit Card::GetSuit() {

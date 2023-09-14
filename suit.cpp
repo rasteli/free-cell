@@ -1,9 +1,15 @@
 #include <string>
 #include "suit.h"
 
-Suit::Suit(int t, std::string c) {
+Suit::Suit(int t) {
+  if (t < 1 || t > 4) {
+    type = -1;
+    color = "";
+    return;
+  }
+  
   type = t;
-  color = c;
+  color = (t == 1 || t == 2) ? "Preto" : "Vermelho";
 }
 
 int Suit::Type() {

@@ -9,7 +9,7 @@ class Suit {
     std::string color;
 
   public:
-    Suit(int t = -1, std::string c = "");
+    Suit(int t = -1);
     int Type();
     std::string Color();
 };
