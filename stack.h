@@ -1,3 +1,5 @@
+// Gabriel Rasteli - 2136428
+
 #include "card.h"
 
 #ifndef STACK_H
@@ -22,8 +24,6 @@ class Stack {
     
     bool Empty(bool left);
     bool Full(bool left);
-
-    int Size(bool left);
 };
 
 #endif

@@ -1,3 +1,5 @@
+// Gabriel Rasteli - 2136428
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -61,7 +63,9 @@ void utils::print_help() {
             << "  - Uma pilha de jogo recebe cartas com naipes de cores alternantes em\n"
             << "    ordem imediatamente decrescente.\n"
             << "  - Uma free cell recebe qualquer carta desde que não esteja já ocupada.\n"
-            << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele.\n\n";
+            << "  - Toda carta de uma pilha de jogo é movida de seu topo e para ele.\n"
+            << "    A ordem das pilhas de jogo segue de cima para baixo, ou seja, o topo\n"
+            << "    é a carta mais acima.\n\n";
 
   std::cout << "Para jogar, insira o índice de onde quer tirar uma carta seguido de um espaço e o índice de onde quer colocá-la.\n"
             << "Por exemplo, se quiser mover a carta do topo da pilha 4 para a free cell 10, insira: 4 10.\n\n"
@@ -73,19 +77,19 @@ void utils::print_help() {
 }
 
 void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, int n) {
+  // pré-condição: tableaus é um vetor de pilhas de jogo, foundations e free_cells são
+  // vetores de Cards inicializadas. Os três vetores têm tamanho n.
+  // pós-condição: As células de tableaus são impressas na tela verticalmente e as
+  // células de foundations e free_cells, horizontalmente.
+  
   Stack aux[n];
-  int max = tableaus[0].Size(true);
   
   std::cout << "Pilhas de Jogo\n---------------------------------\n";
 
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++)
     aux[i] = tableaus[i];
 
-    for (int left = 1; left >= 0; left--)
-      if (aux[i].Size(left) > max) max = aux[i].Size(left);
-  }
-
-  for (int i = 0; i < max; i++) {
+  for (int i = 0; i < max_items; i++) {
     for (int j = 0; j < n; j++) {
       for (int left = 1; left >= 0; left--) {
         std::cout << std::left << std::setw(10);
@@ -104,6 +108,7 @@ void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, in
     std::cout << '\n';
   }
 
+  // Índices
   for (int i = 0; i <= 7; i++)
     std::cout << "  " << std::setw(8) << i;
   
@@ -118,12 +123,10 @@ void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, in
     }
   }
 
-  std::cout << '\n'
-            << std::right
-            << std::setw(3) << 8 
-            << std::setw(6) << 9 
-            << std::setw(7) << 10 
-            << std::setw(6) << 11 
+  // Índices
+  std::cout << '\n' << std::right
+            << std::setw(3) << 8 << std::setw(6) << 9 
+            << std::setw(7) << 10 << std::setw(6) << 11 
             << "\n\n";
 
   std::cout << "Pilhas de Saída\n---------------------------------\n";
@@ -136,11 +139,10 @@ void utils::print_cells(Stack *tableaus, Card *foundations, Card *free_cells, in
     }
   }
 
+  // Índices
   std::cout << '\n'
-            << std::setw(4) << 12
-            << std::setw(6) << 12
-            << std::setw(6) << 12
-            << std::setw(6) << 12
+            << std::setw(4) << 12 << std::setw(6) << 12
+            << std::setw(6) << 12 << std::setw(6) << 12
             << "\n\n";
 }
 
@@ -198,7 +200,7 @@ bool utils::remove_free_cell(Card *free_cells, Card &card, int index) {
 
 bool utils::insert_foundation(Card *foundations, Card card, int &foundations_completed) {
   // pré-condição: foundations é um vetor de Cards inicializadas e a carta na posição
-  // a que card será inserida não é um Rei, tem mesmo naipe e valor menor em 1 que card.
+  // em que card será inserida não é um Rei, tem mesmo naipe e valor menor em 1 que card.
   // pós-condição: card é inserida em foundations e foundations_completed é incrementado
   // em 1 se card for um Rei.
   

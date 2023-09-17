@@ -1,3 +1,5 @@
+// Gabriel Rasteli - 2136428
+
 #include <string>
 #include "suit.h"
 

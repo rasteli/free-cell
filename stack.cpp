@@ -1,3 +1,5 @@
+// Gabriel Rasteli - 2136428
+
 #include <iostream>
 #include <string>
 
@@ -24,7 +26,7 @@ bool Stack::Push(Card item, bool left) {
   // pós-condição: item é inserido na pilha.
   
   if (Full(left)) {
-    std::cout << "Pilha cheia. Não é possível inserir.\n";
+    std::cout << "\nPilha cheia. Não é possível inserir.\n";
     return false;
   }
 
@@ -86,8 +88,4 @@ void Stack::Top(Card &item, bool left) {
   }
   
   item = left ? items[top_left] : items[25 - top_right];
-}
-
-int Stack::Size(bool left) {
-  return (left ? top_left : top_right) + 1;
 }
