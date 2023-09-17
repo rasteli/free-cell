@@ -43,14 +43,14 @@ int main() {
         utils::rindex(to, insert_left);
       
       std::cout << "\nJogada anterior: "
-                << from << " para " << to << "\n\n";
+                << from << ' ' << to << "\n\n";
     }
 
     std::cout << "Faça a jogada: ";
     std::cin >> from >> to;
     std::cin.ignore();
 
-    if (from < 0 || to < 0) {
+    if (from < 0 || to < 0 || from > 12 || to > 12) {
       std::cout << "\nÍndice inválido. Os índices deve estar no intervalo de 0 a 12.\n";
       utils::wait_for_user_input();
       continue;
