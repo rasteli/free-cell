@@ -89,3 +89,7 @@ void Stack::Top(Card &item, bool left) {
   
   item = left ? items[top_left] : items[25 - top_right];
 }
+
+int Stack::Size(bool left) {
+  return (left ? top_left : top_right) + 1;
+}
